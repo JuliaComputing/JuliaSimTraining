@@ -7,4 +7,5 @@
 
 ## Reference
 
-- [ModelingToolkitWorkshop](https://github.com/JuliaComputing/ModelingToolkitWorkshop)
+- [ModelingToolkit Workshop](https://github.com/JuliaComputing/ModelingToolkitWorkshop)
+- [Julia Lang Training](https://github.com/JuliaComputing/Training)
