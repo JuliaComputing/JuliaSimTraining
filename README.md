@@ -15,6 +15,7 @@
 
 ## Notes
 
+- Add JuliaHub SSH Keys?
 - Using internal versus proper
   - No Windows Workstation on proper
 
