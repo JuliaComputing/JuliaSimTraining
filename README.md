@@ -13,6 +13,11 @@
     1. Surrogates
         1. Test FMUs found at [modelica/fmi-cross-check](https://github.com/modelica/fmi-cross-check)
 
+## Notes
+
+- Using internal versus proper
+  - No Windows Workstation on proper
+
 ## Reference
 
 - [ModelingToolkit Workshop](https://github.com/JuliaComputing/ModelingToolkitWorkshop)
