@@ -1,87 +1,88 @@
-# # Modeling Toolkit Example
-# Build the DC Motor System using the ModelingToolkit Standard Library.
-using ModelingToolkit, DifferentialEquations, Plots, ControlSystemsBase
-using ModelingToolkitStandardLibrary,
-    ModelingToolkitStandardLibrary.Electrical,
-    ModelingToolkitStandardLibrary.Mechanical.Rotational,
-    ModelingToolkitStandardLibrary.Blocks
-@variables t
-# R = 0.5 # [Ohm] armature resistance
-# L = 4.5e-3 # [H] armature inductance
-# k = 0.5 # [N.m/A] motor constant
-# J = 0.02 # [kg.m²] inertia
-# f = 0.01 # [N.m.s/rad] friction factor
-function Motor(; name, R=0.5, L=4.5e-3, k=0.5, J=0.02, f=0.01)
-    @named ground = Ground()
-    @named source = Voltage()
-    @named R1 = Resistor(; R=R)
-    @named L1 = Inductor(; L=L)
-    @named emf = EMF(; k=k)
-    @named fixed = Fixed()
-    @named load = Torque(; use_support=false)
-    @named inertia = Inertia(; J=J)
-    @named friction = Damper(; d=f)
+# # Running Better Batch Jobs on JuliaHub
+# Now that we know the basics, let's see what additional functionality JuliaHub provides to monitor and analyze batch jobs.
 
-    connections = [
-        connect(fixed.flange, emf.support, friction.flange_b)
-        connect(emf.flange, friction.flange_a, inertia.flange_a)
-        connect(inertia.flange_b, load.flange)
-        connect(source.p, R1.p)
-        connect(R1.n, L1.p)
-        connect(L1.n, emf.p)
-        connect(emf.n, source.n, ground.g)
-    ]
-    subcomps = [ground, source, R1, L1, emf, fixed, load, inertia, friction]
-    @named model = ODESystem(connections, t)
-    return compose(model, subcomps)
-end
+using ModelingToolkit, Plots, DifferentialEquations, JSON3
 
-pi_k = 1.1
-pi_T = 0.05
-@named motor = Motor();
-tau_L_step = -0.3 # [N.m] amplitude of the load torque step
-@named ref = Blocks.Step(; height=1, start_time=0)
-@named pi_controller = Blocks.LimPI(; k=pi_k, T=pi_T, u_max=10, Ta=0.035)
-@named feedback = Blocks.Feedback()
-@named load_step = Blocks.Step(; height=tau_L_step, start_time=3)
-@named speed_sensor = SpeedSensor()
+# ## Rich Logging
+# Use Julia's logging macros to gain better insight to job progress.
+# Log messages can be added throughout your code and executed interactively or in batch.
 
-connections = [
-    connect(motor.load.flange, speed_sensor.flange)
-    connect(ref.output, feedback.input1)
-    connect(speed_sensor.w, :y, feedback.input2)
-    connect(load_step.output, motor.load.tau)
-    connect(feedback.output, pi_controller.err_input)
-    connect(pi_controller.ctr_output, :u, motor.source.V)
-]
+@warn "About to write log message."
+x = 1
+@info "Attach variables to the message." x a = 42.0
 
-subcomps = [motor, ref, pi_controller, feedback, load_step, speed_sensor]
-@named model = ODESystem(connections, t)
-model = compose(model, subcomps)
+@variables t x(t) y(t)
+@parameters α β δ γ
+D = Differential(t)
+eqs = [
+    D(x) ~ α * x - β * x * y
+    D(y) ~ δ * x * y - γ * y
+];
 
-# # Extend Problem Timespan
-# Launch batch job
+@named model = ODESystem(eqs, t);
 
-sys = structural_simplify(model)
-prob = ODEProblem(sys, [], (0, 6.0))
-sol = solve(prob, Rodas4())
+# ## Inputs
+# Users can choose to provide inputs values for any variable.
+# This enables running different simulations with zero code changes.
+# Additionally, specified inputs will appear in the Job Details for record keeping.
+# In the **Inputs** section of the JuliaHub extension:
+# - Click plus, `+`, to add an input key-value pair
+# - Enter the second argument of the `get` call as the key
+# - Enter the desired number as the value
+# Any input not provided will fall back to its default value.
 
-# # Save Job Results
-# JSON object and plots
+input_tstop = parse(Float64, get(ENV, "input_tstop", 3600.0)) # get value of `input_tstop` or use default value 3600.0
+input_x = parse(Float64, get(ENV, "input_x", 0.9)) # get value of `input_x` or use default value 0.9
+input_y = parse(Float64, get(ENV, "input_y", 1.8)) # get value of `input_y` or use default value 1.8
 
-p1 = Plots.plot(
-    sol.t,
-    sol[motor.inertia.w];
-    ylabel="Angular Vel. in rad/s",
-    label="Measurement",
-    title="DC Motor with Speed Controller",
+prob = ODEProblem(
+    model,
+    [x => input_x, y => input_y],
+    (0, input_tstop),
+    [α => 2 / 3, β => 4 / 3, γ => 1, δ => 1],
 )
-Plots.plot!(sol.t, sol[ref.output.u]; label="Reference")
-p2 = Plots.plot(sol.t, sol[motor.load.tau.u]; ylabel="Disturbance in Nm", label="")
-Plots.plot(p1, p2; layout=(2, 1))
+sol = solve(prob)
 
-mat, simplified_sys = get_sensitivity(model, :y);
-S = ss(mat...);
-bplot = bodeplot(S; plotphase=false)
-nplot = nyquistplot(-ss(get_looptransfer(model, :u)[1]...))
-Plots.plot(p1, p2, bplot, nplot; layout=(2, 2))
+# ## Outputs
+# Batch jobs can have two types of outputs: JSON objects or files.
+#
+# Each type of output can be easily accessed after a job is completed.
+# JSON objects can be viewed from the [Job List](https://juliahub.com/ui/Jobs) by clicking on a job's Details.
+# The JSON object will be displayed under the **Outputs** section in Details.
+# Preparing this output is a simple matter of assigning the `RESULTS` environment variable to the desired JSON object.
+# First, define a dictionary with the appropriate output data.
+
+results = Dict(
+    :return_code => sol.retcode, :x_final => first(sol[end]), :y_final => last(sol[end])
+)
+
+# Then, convert the Julia dictionary to a JSON object and assign it to `RESULTS`.
+
+ENV["RESULTS"] = JSON3.write(results)
+
+# Job outputs can also be files.
+# Any job with output files will be denoted in the [Job List](https://juliahub.com/ui/Jobs) with a file icon.
+# Clicking on that job's Details will show a tar file in the **Output Files** section.
+# Preparing this output requires users to add logic to their code to save the output files
+# and assign the `RESULTS_FILE` environment variable to the filepath.
+# If you wish for the job output to be a single file, then use the path to that file.
+# If you wish for the job output to be multiple files, then use the path to the directory containing all outputs.
+#
+# First, make the path where we will save our outputs.
+
+results_path = joinpath(@__DIR__, "results")
+mkpath(results_path)
+
+
+# Then, save results in the output path.
+
+plot(sol)
+savefig(joinpath(results_path, "solution.png"))
+
+# Finally, assign `RESULTS_FILE` to the path of the directory containing the output.
+
+ENV["RESULTS_FILE"] = results_path
+
+# ## FAQ
+# Batch jobs have a limit on the size of **Bundle directory**.
+# Create a `.juliabundleignore` at the root of the bundle and specify the paths which are not necessary for successful execution.
