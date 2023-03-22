@@ -1,8 +1,8 @@
 # # Surrogates from FMUs
 # This example demonstrates the process of creating a surrogate from an FMU.
 # Creating surrogates from any input source involves the following steps:
-# 1. Julia Environment Setup
-# 1. Model Setup
+# 1. Environment Setup
+# 1. Problem Definition
 # 1. Data Generation
 # 1. Surrogate Creation
 
@@ -15,17 +15,27 @@
 using JuliaSimSurrogates
 using DataGeneration.FMI
 using DataGeneration
+using DataSets
 using OrdinaryDiffEq
 using Random
 
-Random.seed!(1)
+Random.seed!(1) # for reproducibility
 
-# ## Model Setup
+# ## Problem Definition
+# When **within JuliaSim IDE**: use the public DataSet.
+
+open(
+    io -> write(joinpath(@__DIR__, "CoupledClutches.fmu"), io),
+    IO,
+    dataset("jvaverka2/CoupledClutches_fmu"),
+)
+
+# Otherwise, **when unable to access JuliaHub DataSets**:
 # Download the example FMU, [CoupledClutches](https://github.com/modelica/fmi-cross-check/blob/master/fmus/2.0/me/linux64/MapleSim/2018/CoupledClutches/CoupledClutches.fmu).
-# Upload the file so that it can be accessed on JuliaHub using the IDE.
+# Upload the file so that it can be accessed in your IDE.
 # Place the FMU in the `JuliaSimTraining/Surrogates/` directory and match the name for `fmu_path`.
 
-fmu_path = joinpath(@__DIR__, "CoupledClutches_ME.fmu")
+fmu_path = joinpath(@__DIR__, "CoupledClutches.fmu")
 fmu = FMI.fmi2Load(fmu_path)
 
 # ## Data Generation
@@ -45,21 +55,21 @@ fmu = FMI.fmi2Load(fmu_path)
 nsamples_params = 250
 params_lb = [0.19, 0.39]
 params_ub = [0.21, 0.41]
-param_space = ParameterSpace(params_lb, params_ub, nsamples_params; labels = ["freqHz", "T2"])
+param_space = ParameterSpace(params_lb, params_ub, nsamples_params; labels=["freqHz", "T2"])
 
 # To aide in the process of generating this `ExperimentData`, or training data, we leverage the `SimulatorConfig`.
 # This mechanism configures the simulations necessary to cover the desired sampling space.
 # Below we define our simulation configuration using our sampling space.
 
 simconfig = SimulatorConfig(param_space);
-display_table(simconfig; compact = false)
+display_table(simconfig; compact=false)
 
 # Now let's create our `ExperimentData` object and name it `ed`.
 # We create `ed` by calling our `simconfig` as a function with our `fmu` as input.
 # `simconfig` will then sample the space we described by running `fmu` with the proper configurations.
 
-ed = simconfig(fmu; outputs = FMI.FMIImport.fmi2GetOutputNames(fmu) .|> string);
-display_table(ed; compact = false)
+ed = simconfig(fmu; outputs=string.(FMI.FMIImport.fmi2GetOutputNames(fmu)));
+display_table(ed; compact=false)
 
 # ## Surrogate Creation
 # Everything is in place to create a surrogate.
@@ -71,7 +81,7 @@ display_table(ed; compact = false)
 
 RSIZE = 100
 model = CTESN(RSIZE)
-surrogate = surrogatize(ed, model; verbose = true);
+surrogate = surrogatize(ed, model; verbose=true);
 
 # We have created our `surrogate` object! This can be called using a convention similar to the common SciML `solve` interface.
 # Provide initial conditions, parameter values and timespan (`x0`, `p` and `t` respectively) to produce its result.
