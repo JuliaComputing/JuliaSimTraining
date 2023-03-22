@@ -1,25 +1,16 @@
-# JuliaSimTraining
+# JuliaSim Training
 
-## Agenda
+JuliaSim is the simulation and modeling platform built upon the JuliaHub platform.
+This section walks through the first steps toward using JuliaSim's advanced modeling tools.
 
-1. JuliaHub
-    1. Interactive jobs
-    1. Batch jobs
-    1. Logging
-1. JuliaSim
-    1. Modeling Toolkit
-    1. [Modeling for Control](https://help.juliahub.com/juliasimcontrol/stable/examples/mtk_control/)
-    1. [Global Model Calibration](https://help.juliahub.com/jsmo/dev/example/ThermalConduction/)
-    1. Surrogates
-        1. Test FMUs found at [modelica/fmi-cross-check](https://github.com/modelica/fmi-cross-check)
+## What is JuliaSim
 
-## Notes
+JuliaSim is a next generation cloud-based simulation platform, combining the latest techniques in Scientific Machine Learning with equation-based digital twin modeling and simulation.
 
-- Add JuliaHub SSH Keys?
-- Using internal versus proper
-  - No Windows Workstation on proper
+## Getting Started
 
 ## Reference
 
 - [ModelingToolkit Workshop](https://github.com/JuliaComputing/ModelingToolkitWorkshop)
+- [Test FMUs](https://github.com/modelica/fmi-cross-check)
 - [Julia Lang Training](https://github.com/JuliaComputing/Training)
