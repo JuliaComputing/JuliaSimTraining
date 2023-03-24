@@ -9,15 +9,13 @@ using ModelingToolkit, Plots, DifferentialEquations, JSON3
 
 @warn "About to write log message."
 x = 1
-@info "Attach variables to the message." x a = 42.0
+@info "Attach variables to the message." x a=42.0
 
 @variables t x(t) y(t)
 @parameters α β δ γ
 D = Differential(t)
-eqs = [
-    D(x) ~ α * x - β * x * y
-    D(y) ~ δ * x * y - γ * y
-];
+eqs = [D(x) ~ α * x - β * x * y
+       D(y) ~ δ * x * y - γ * y];
 
 @named model = ODESystem(eqs, t);
 
@@ -35,12 +33,10 @@ input_tstop = parse(Float64, get(ENV, "input_tstop", 3600.0)) # get value of `in
 input_x = parse(Float64, get(ENV, "input_x", 0.9)) # get value of `input_x` or use default value 0.9
 input_y = parse(Float64, get(ENV, "input_y", 1.8)) # get value of `input_y` or use default value 1.8
 
-prob = ODEProblem(
-    model,
-    [x => input_x, y => input_y],
-    (0, input_tstop),
-    [α => 2 / 3, β => 4 / 3, γ => 1, δ => 1],
-)
+prob = ODEProblem(model,
+                  [x => input_x, y => input_y],
+                  (0, input_tstop),
+                  [α => 2 / 3, β => 4 / 3, γ => 1, δ => 1])
 sol = solve(prob)
 
 # ## Outputs
@@ -52,9 +48,8 @@ sol = solve(prob)
 # Preparing this output is a simple matter of assigning the `RESULTS` environment variable to the desired JSON object.
 # First, define a dictionary with the appropriate output data.
 
-results = Dict(
-    :return_code => sol.retcode, :x_final => first(sol[end]), :y_final => last(sol[end])
-)
+results = Dict(:return_code => sol.retcode, :x_final => first(sol[end]),
+               :y_final => last(sol[end]))
 
 # Then, convert the Julia dictionary to a JSON object and assign it to `RESULTS`.
 
@@ -72,7 +67,6 @@ ENV["RESULTS"] = JSON3.write(results)
 
 results_path = joinpath(@__DIR__, "results")
 mkpath(results_path)
-
 
 # Then, save results in the output path.
 

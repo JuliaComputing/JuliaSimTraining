@@ -59,15 +59,15 @@ p_ub = [2.5, 2.0, 2.5, 2.0]
 # JuliaSimSurrogates provides methods to display the summary of a simulator configuration as a formatted table.
 
 simconfig = SimulatorConfig(ParameterSpace(p_lb, p_ub, nsamples_p))
-display_table(simconfig; compact=false)
+display_table(simconfig; compact = false)
 
 # The simulator configuration can now be called to run the various simulation setups against the given problem.
 # Keyword arguments such as the solver algorithm, `alg`, are supported.
 # All simulation runs are gathered into an `ExperimentData` object (assigned to `ed`).
 # Again, JuliaSimSurrogates provides methods to display summary information for a collection of experiment data.
 
-ed = simconfig(prob; alg=Tsit5())
-display_table(ed; compact=false)
+ed = simconfig(prob; alg = Tsit5())
+display_table(ed; compact = false)
 
 # ## Surrogate Creation
 # Now that the experiment data object is ready, we are almost ready to create a surrogate model.
@@ -86,7 +86,7 @@ model = CTESN(RSIZE);
 
 # Finally, we are ready to generate the surrogate.
 
-surrogate = surrogatize(ed, model; verbose=true);
+surrogate = surrogatize(ed, model; verbose = true);
 
 # This `surrogate` object can now be called just as you would call `solve` on a typical ODE problem.
 # However, now you are calling the semi-neural ODE which has been trained over the total sample space using CTESN!

@@ -10,60 +10,58 @@ using ModelingToolkit
 
 @variables t
 @connector function Pin(; name)
-    sts = @variables v(t) = 1.0 i(t) = 1.0 [connect = Flow]
-    return ODESystem(Equation[], t, sts, []; name=name)
+    sts = @variables v(t)=1.0 i(t)=1.0 [connect = Flow]
+    return ODESystem(Equation[], t, sts, []; name = name)
 end
 
 function Ground(; name)
     @named g = Pin()
     eqs = [g.v ~ 0]
-    return compose(ODESystem(eqs, t, [], []; name=name), g)
+    return compose(ODESystem(eqs, t, [], []; name = name), g)
 end
 
 function OnePort(; name)
     @named p = Pin()
     @named n = Pin()
-    sts = @variables v(t) = 1.0 i(t) = 1.0
-    eqs = [
-        v ~ p.v - n.v
-        0 ~ p.i + n.i
-        i ~ p.i
-    ]
-    return compose(ODESystem(eqs, t, sts, []; name=name), p, n)
+    sts = @variables v(t)=1.0 i(t)=1.0
+    eqs = [v ~ p.v - n.v
+           0 ~ p.i + n.i
+           i ~ p.i]
+    return compose(ODESystem(eqs, t, sts, []; name = name), p, n)
 end
 
-function Resistor(; name, R=1.0)
+function Resistor(; name, R = 1.0)
     @named oneport = OnePort()
     @unpack v, i = oneport
     ps = @parameters R = R
     eqs = [v ~ i * R]
-    return extend(ODESystem(eqs, t, [], ps; name=name), oneport)
+    return extend(ODESystem(eqs, t, [], ps; name = name), oneport)
 end
 
-function Capacitor(; name, C=1.0)
+function Capacitor(; name, C = 1.0)
     @named oneport = OnePort()
     @unpack v, i = oneport
     ps = @parameters C = C
     D = Differential(t)
     eqs = [D(v) ~ i / C]
-    return extend(ODESystem(eqs, t, [], ps; name=name), oneport)
+    return extend(ODESystem(eqs, t, [], ps; name = name), oneport)
 end
 
-function Inductor(; name, L=1.0)
+function Inductor(; name, L = 1.0)
     @named oneport = OnePort()
     @unpack v, i = oneport
     ps = @parameters L = L
     D = Differential(t)
     eqs = [D(i) ~ v / L]
-    return extend(ODESystem(eqs, t, [], ps; name=name), oneport)
+    return extend(ODESystem(eqs, t, [], ps; name = name), oneport)
 end
 
-function ConstantVoltage(; name, V=1.0)
+function ConstantVoltage(; name, V = 1.0)
     @named oneport = OnePort()
     @unpack v = oneport
     ps = @parameters V = V
     eqs = [V ~ v]
-    return extend(ODESystem(eqs, t, [], ps; name=name), oneport)
+    return extend(ODESystem(eqs, t, [], ps; name = name), oneport)
 end
 
 end
@@ -82,21 +80,19 @@ L = C = V = R = 1.0
 
 #-
 
-@named inductor = RLC.Inductor(; L=L)
-@named resistor = RLC.Resistor(; R=R)
-@named capacitor = RLC.Capacitor(; C=C)
-@named source = RLC.ConstantVoltage(; V=V)
+@named inductor = RLC.Inductor(; L = L)
+@named resistor = RLC.Resistor(; R = R)
+@named capacitor = RLC.Capacitor(; C = C)
+@named source = RLC.ConstantVoltage(; V = V)
 @named ground = RLC.Ground()
 
 # Once all required components are created, connect them such that the desired flow describes the circuit model.
 
-rlc_eqs = [
-    connect(source.p, resistor.p)
-    connect(resistor.n, inductor.p)
-    connect(inductor.n, capacitor.p)
-    connect(capacitor.n, source.n)
-    connect(capacitor.n, ground.g)
-]
+rlc_eqs = [connect(source.p, resistor.p)
+           connect(resistor.n, inductor.p)
+           connect(inductor.n, capacitor.p)
+           connect(capacitor.n, source.n)
+           connect(capacitor.n, ground.g)]
 
 # Create a new model out of the collection of equations defined by the flow connections.
 

@@ -34,15 +34,13 @@ D = Differential(t)
 # Use the code cells below for practice.
 
 #-
-eqs = [
-    D(x) ~ α * x - β * x * y
-    D(y) ~ δ * x * y - γ * y
-];
+
+eqs = [D(x) ~ α * x - β * x * y
+       D(y) ~ δ * x * y - γ * y];
 @named model = ODESystem(eqs, t);
 
-prob = ODEProblem(
-    model, [x => 0.9, y => 1.8], (0, 20.0), [α => 2 / 3, β => 4 / 3, γ => 1, δ => 1]
-)
+prob = ODEProblem(model, [x => 0.9, y => 1.8], (0, 20.0),
+                  [α => 2 / 3, β => 4 / 3, γ => 1, δ => 1])
 #-
 sol = solve(prob)
 #-

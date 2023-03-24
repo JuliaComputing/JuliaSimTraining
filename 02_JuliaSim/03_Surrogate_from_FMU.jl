@@ -24,11 +24,9 @@ Random.seed!(1) # for reproducibility
 # ## Problem Definition
 # When **within JuliaSim IDE**: use the public DataSet.
 
-open(
-    io -> write(joinpath(@__DIR__, "CoupledClutches.fmu"), io),
-    IO,
-    dataset("jvaverka2/CoupledClutches_fmu"),
-)
+open(io -> write(joinpath(@__DIR__, "CoupledClutches.fmu"), io),
+     IO,
+     dataset("jvaverka2/CoupledClutches_fmu"))
 
 # Otherwise, **when unable to access JuliaHub DataSets**:
 # Download the example FMU, [CoupledClutches](https://github.com/modelica/fmi-cross-check/blob/master/fmus/2.0/me/linux64/MapleSim/2018/CoupledClutches/CoupledClutches.fmu).
@@ -55,21 +53,22 @@ fmu = FMI.fmi2Load(fmu_path)
 nsamples_params = 250
 params_lb = [0.19, 0.39]
 params_ub = [0.21, 0.41]
-param_space = ParameterSpace(params_lb, params_ub, nsamples_params; labels=["freqHz", "T2"])
+param_space = ParameterSpace(params_lb, params_ub, nsamples_params;
+                             labels = ["freqHz", "T2"])
 
 # To aide in the process of generating this `ExperimentData`, or training data, we leverage the `SimulatorConfig`.
 # This mechanism configures the simulations necessary to cover the desired sampling space.
 # Below we define our simulation configuration using our sampling space.
 
 simconfig = SimulatorConfig(param_space);
-display_table(simconfig; compact=false)
+display_table(simconfig; compact = false)
 
 # Now let's create our `ExperimentData` object and name it `ed`.
 # We create `ed` by calling our `simconfig` as a function with our `fmu` as input.
 # `simconfig` will then sample the space we described by running `fmu` with the proper configurations.
 
-ed = simconfig(fmu; outputs=string.(FMI.FMIImport.fmi2GetOutputNames(fmu)));
-display_table(ed; compact=false)
+ed = simconfig(fmu; outputs = string.(FMI.FMIImport.fmi2GetOutputNames(fmu)));
+display_table(ed; compact = false)
 
 # ## Surrogate Creation
 # Everything is in place to create a surrogate.
@@ -81,7 +80,7 @@ display_table(ed; compact=false)
 
 RSIZE = 100
 model = CTESN(RSIZE)
-surrogate = surrogatize(ed, model; verbose=true);
+surrogate = surrogatize(ed, model; verbose = true);
 
 # We have created our `surrogate` object! This can be called using a convention similar to the common SciML `solve` interface.
 # Provide initial conditions, parameter values and timespan (`x0`, `p` and `t` respectively) to produce its result.

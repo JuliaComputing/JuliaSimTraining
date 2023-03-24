@@ -21,7 +21,7 @@ using Random
 
 using Distributed
 rmprocs(workers())
-addprocs(7; exeflags=["--project=."])
+addprocs(7; exeflags = ["--project=."])
 
 # Now make the packages for data generation available on all worker nodes.
 
@@ -34,11 +34,9 @@ Random.seed!(1) # for reproducibility
 # ## Problem Definition
 # When **within JuliaSim IDE**: use the public DataSet.
 
-open(
-    io -> write(joinpath(@__DIR__, "CoupledClutches.fmu"), io),
-    IO,
-    dataset("jvaverka2/CoupledClutches_fmu"),
-)
+open(io -> write(joinpath(@__DIR__, "CoupledClutches.fmu"), io),
+     IO,
+     dataset("jvaverka2/CoupledClutches_fmu"))
 
 # Otherwise, **when unable to access JuliaHub DataSets**:
 # Download the example FMU, [CoupledClutches](https://github.com/modelica/fmi-cross-check/blob/master/fmus/2.0/me/linux64/MapleSim/2018/CoupledClutches/CoupledClutches.fmu).
@@ -74,17 +72,17 @@ ctrl_space = CtrlSpace(ctrl_lb, ctrl_ub, func, nsamples_ctrl)
 nsamples_p = 5
 p_lb = [0.19, 0.39]
 p_ub = [0.21, 0.41]
-param_space = ParameterSpace(p_lb, p_ub, nsamples_p; labels=["freqHz", "T2"])
+param_space = ParameterSpace(p_lb, p_ub, nsamples_p; labels = ["freqHz", "T2"])
 
 # A simulator configuration composed of all three sampling spaces provides the most robust data generation method.
 
 simconfig = SimulatorConfig(ic_space, ctrl_space, param_space);
-display_table(simconfig; compact=false)
+display_table(simconfig; compact = false)
 
 # Call the simulator configuration with our probem - in this case it is the FMU.
 
-ed = simconfig(fmu; outputs=string.(FMI.FMIImport.fmi2GetOutputNames(fmu)));
-display_table(ed; compact=false)
+ed = simconfig(fmu; outputs = string.(FMI.FMIImport.fmi2GetOutputNames(fmu)));
+display_table(ed; compact = false)
 
 # Additional worker proessors can be removed at this point.
 
@@ -95,7 +93,7 @@ rmprocs(workers())
 
 RSIZE = 100
 model = AugmentedELM(6, RSIZE)
-surrogate = surrogatize(ed, model; verbose=true);
+surrogate = surrogatize(ed, model; verbose = true);
 
 # Call the new surrogate!
 
