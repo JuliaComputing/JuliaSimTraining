@@ -9,9 +9,17 @@ JuliaSim is a next generation cloud-based simulation platform, combining the lat
 
 ## Agenda
 
-- [60 min]: Introduction to MTK
+- [45 min]: Introduction to MTK
+    - `JuliaSimTraining/01_JuliaHub/01_Interactive_Development.jl`
+    - `JuliaSimTraining/02_JuliaSim/01_Acausal_LV_Model.jl`
+    - `JuliaSimTraining/02_JuliaSim/02_Acausal_RLC_Model.jl`
 - [30 min]: Optimizing MTK models
-- [30 min]: Accelerating MTK models
+    - `JuliaSimTraining/02_JuliaSim/03_Acausal_Model_Parameter_Estimation.jl`
+    - `JuliaSimTraining/02_JuliaSim/04_Model_Calibration.jl`
+- [45 min]: Accelerating MTK models
+    - `JuliaSimTraining/02_JuliaSim/05_Surrogate_from_ODE.jl`
+    - `JuliaSimTraining/02_JuliaSim/06_Surrogate_from_FMU.jl`
+    - `JuliaSimTraining/02_JuliaSim/07_Surrogate_from_FMU_distributed.jl`
 
 ## Extra Material
 
