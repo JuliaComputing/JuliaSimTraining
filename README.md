@@ -7,7 +7,16 @@ This section walks through the first steps toward using JuliaSim's advanced mode
 
 JuliaSim is a next generation cloud-based simulation platform, combining the latest techniques in Scientific Machine Learning with equation-based digital twin modeling and simulation.
 
-## Getting Started
+## Agenda
+
+- [60 min]: Introduction to MTK
+- [30 min]: Optimizing MTK models
+- [30 min]: Accelerating MTK models
+
+## Extra Material
+
+- MTK for Control
+- State Estimation
 
 ## Reference
 
