@@ -36,7 +36,7 @@ Random.seed!(1) # for reproducibility
 
 open(io -> write(joinpath(@__DIR__, "CoupledClutches.fmu"), io),
      IO,
-     dataset("jvaverka2/CoupledClutches_fmu"))
+     dataset("jacob_vaverka2/CoupledClutches_ME_fmu"))
 
 # Otherwise, **when unable to access JuliaHub DataSets**:
 # Download the example FMU, [CoupledClutches](https://github.com/modelica/fmi-cross-check/blob/master/fmus/2.0/me/linux64/MapleSim/2018/CoupledClutches/CoupledClutches.fmu).

@@ -26,7 +26,7 @@ Random.seed!(1) # for reproducibility
 
 open(io -> write(joinpath(@__DIR__, "CoupledClutches.fmu"), io),
      IO,
-     dataset("jvaverka2/CoupledClutches_fmu"))
+     dataset("jacob_vaverka2/CoupledClutches_ME_fmu"))
 
 # Otherwise, **when unable to access JuliaHub DataSets**:
 # Download the example FMU, [CoupledClutches](https://github.com/modelica/fmi-cross-check/blob/master/fmus/2.0/me/linux64/MapleSim/2018/CoupledClutches/CoupledClutches.fmu).
@@ -84,7 +84,7 @@ surrogate = surrogatize(ed, model; verbose = true);
 
 # We have created our `surrogate` object! This can be called using a convention similar to the common SciML `solve` interface.
 # Provide initial conditions, parameter values and timespan (`x0`, `p` and `t` respectively) to produce its result.
-# 
+#
 #   `surrogate(x0, p, t)`
 
 surrogate([0.0, 1.0, 0.0, 0.0], [0.2002, 0.4004], (0, 1e4))
