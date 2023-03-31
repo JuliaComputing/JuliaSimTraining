@@ -1,7 +1,7 @@
 using Literate
 
 const SCRIPT_PATH = @__DIR__
-const STATIC_PATH = joinpath(SCRIPT_PATH, "static")
+const STATIC_PATH = joinpath(SCRIPT_PATH, "_static")
 scripts = Dict("01_JuliaHub" => [
                          "01_Interactive_Development.jl",
                          "02_Batch_Job.jl",
