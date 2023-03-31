@@ -7,6 +7,7 @@ scripts = Dict("01_JuliaHub" => [
                          "02_Batch_Job.jl",
                          "03_Batch_Job_Logging.jl"],
                      "02_JuliaSim" => [
+                         "00_RC_Circuit_Model.jl",
                          "01_Acausal_LV_Model.jl",
                          "02_Acausal_RLC_Model.jl",
                          "03_Acausal_Model_Parameter_Estimation.jl",
