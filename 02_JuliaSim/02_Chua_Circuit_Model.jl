@@ -1,21 +1,7 @@
 # # Custom Model Components
 # What happens when the standard library is missing a component?
-# Say the RC circuit model need to be extended to include a nonlinear resistor.
-# In order to construct this model, a `NonlinearResistor` component must exist.
-
-#=
-```
-      I
-     ──────►   ┌───────┐
-    ┌──────────┤   Nr  ├────┐
-    │          └───────┘    │
-    │                     ┌─┴─┐
-  ──┴──                   │ R │
-C  ─┬─                    │   │
-    │                     └─┬─┘
-    └───────────────────────┘
-```
-=#
+# For instance, say we want to build a Chua circuit model.
+# We would need to build a nonlinear resistor to build such a system.
 
 using OrdinaryDiffEq
 using ModelingToolkit
@@ -26,10 +12,15 @@ using IfElse: ifelse
 using Statistics
 using StatsPlots
 
-# ## Model Setup
-# Create a custom component (non-linear resistor) using pre-defined components from
-# the `Electrical` module of `ModelingToolkitStandardLibrary`. This strategy show how component
-# libraries may be built up, extended and used to create more complicated models.
+# ## Buidling the Nonlinear Resistor
+# Here is an image of the circuit we wish to build.
+
+# ![chua](../../_assets/chua.png)
+
+# The component labeled ``N_R`` is the nonlinear resistor which we need to build based off
+# the current-voltage characteristics in the following diagram.
+
+# ![nr](../../_assets/diode-char-curve.png)
 
 @parameters t
 
@@ -47,6 +38,7 @@ function NonlinearResistor(; name, Ga, Gb, Ve)
     extend(ODESystem(eqs, t, [], pars; name = name), oneport)
 end
 
+# ## Building the Model
 # Between the pre-defined components available from `ModelingToolkitStandardLibrary.Electrical`
 # and our custom component, we have all the required pieces to define our model.
 
@@ -60,7 +52,7 @@ end
                               Ve = 1)
 @named Gnd = Ground()
 
-# Connections will determine the flow of electricity throughout the system.
+# For connections to determine the flow of electricity throughout the system.
 
 connections = [connect(L.p, G.p)
                connect(G.n, Nr.p)
