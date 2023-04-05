@@ -34,9 +34,9 @@ In the **Inputs** section of the JuliaHub extension:
 Any input not provided will fall back to its default value.
 
 ````julia
-input_tstop = parse(Float64, get(ENV, "input_tstop", 3600.0)) # get value of `input_tstop` or use default value 3600.0
-input_x = parse(Float64, get(ENV, "input_x", 0.9)) # get value of `input_x` or use default value 0.9
-input_y = parse(Float64, get(ENV, "input_y", 1.8)) # get value of `input_y` or use default value 1.8
+input_tstop = parse(Float64, get(ENV, "input_tstop", "3600.0")) # get value of `input_tstop` or use default value 3600.0
+input_x = parse(Float64, get(ENV, "input_x", "0.9")) # get value of `input_x` or use default value 0.9
+input_y = parse(Float64, get(ENV, "input_y", "1.8")) # get value of `input_y` or use default value 1.8
 
 prob = ODEProblem(model,
                   [x => input_x, y => input_y],
