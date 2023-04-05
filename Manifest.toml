@@ -558,6 +558,18 @@ git-tree-sha1 = "4df9f7e06108728ebf00a0a11edee4b29a482bb2"
 uuid = "c27321d9-0574-5035-807b-f59d2c89b15c"
 version = "1.3.0"
 
+[[deps.GraphQLClient]]
+deps = ["GraphQLParser", "HTTP", "JSON3", "StructTypes"]
+git-tree-sha1 = "a12336fdb6697b77bd03c057cad0acd5a3d92d84"
+uuid = "09d831e3-9c21-47a9-bfd8-076871817219"
+version = "0.7.6"
+
+[[deps.GraphQLParser]]
+deps = ["Parsers"]
+git-tree-sha1 = "1e02ab62f3ee788e15d1691edbe5046a13cba7bc"
+uuid = "0ae10fbf-af58-4883-b66b-ff0ac82d20dd"
+version = "0.1.3"
+
 [[deps.Graphite2_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
 git-tree-sha1 = "344bf40dcab1073aca04aa0df4fb092f920e4011"
@@ -727,6 +739,12 @@ deps = ["CSTParser", "CommonMark", "DataStructures", "Glob", "Pkg", "SnoopPrecom
 git-tree-sha1 = "0f6545dd63fec03d0cfe0c1d28f851e2d804e942"
 uuid = "98e50ef6-434e-11e9-1051-2b60c6c9e899"
 version = "1.0.25"
+
+[[deps.JuliaHubClient]]
+deps = ["Base64", "Dates", "Glob", "GraphQLClient", "HTTP", "JSON", "Pkg", "PkgAuthentication", "Printf", "Rclone_jll", "SHA", "StructTypes", "Tar", "URIs", "UUIDs"]
+git-tree-sha1 = "690d511730142b2c2af13008abcd68b936552e93"
+uuid = "a1216acd-9fc2-4d5e-aac3-a28721b16c80"
+version = "0.5.4"
 
 [[deps.JumpProcesses]]
 deps = ["ArrayInterface", "DataStructures", "DiffEqBase", "DocStringExtensions", "FunctionWrappers", "Graphs", "LinearAlgebra", "Markdown", "PoissonRandom", "Random", "RandomNumbers", "RecursiveArrayTools", "Reexport", "SciMLBase", "StaticArrays", "TreeViews", "UnPack"]
@@ -1149,6 +1167,12 @@ version = "0.40.1+0"
 deps = ["Artifacts", "Dates", "Downloads", "LibGit2", "Libdl", "Logging", "Markdown", "Printf", "REPL", "Random", "SHA", "Serialization", "TOML", "Tar", "UUIDs", "p7zip_jll"]
 uuid = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 
+[[deps.PkgAuthentication]]
+deps = ["Downloads", "JSON", "Pkg", "Random", "Test"]
+git-tree-sha1 = "9adf130898d69775fed6095d96b27cbbbb265700"
+uuid = "4722fa14-9d28-45f9-a1e2-a38605bd88f0"
+version = "2.0.0"
+
 [[deps.PlotThemes]]
 deps = ["PlotUtils", "Statistics"]
 git-tree-sha1 = "1f03a2d339f42dca4a4da149c7e15e9b896ad899"
@@ -1268,6 +1292,12 @@ deps = ["Requires"]
 git-tree-sha1 = "dc84268fe0e3335a62e315a3a7cf2afa7178a734"
 uuid = "c84ed2f1-dad5-54f0-aa8e-dbefe2724439"
 version = "0.4.3"
+
+[[deps.Rclone_jll]]
+deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
+git-tree-sha1 = "7990dead8f6624fd9989ff5617dc737504b890cf"
+uuid = "d3707c4a-c138-5086-90bb-c65de4e50315"
+version = "1.60.1+0"
 
 [[deps.RecipesBase]]
 deps = ["SnoopPrecompile"]
