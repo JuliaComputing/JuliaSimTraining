@@ -8,9 +8,10 @@ scripts = Dict("01_JuliaHub" => [
                    "03_Batch_Job_Logging.jl"],
                "02_JuliaSim" => [
                    "01_RC_Circuit_Model.jl",
-                   "02_RLC_Parameter_Estimation.jl",
-                   "03_Surrogate_from_ODE.jl",
-                   "04_Surrogate_from_FMU.jl"])
+                   "02_RLC_Circuit_Model.jl",
+                   "03_Parameter_Estimation.jl",
+                   "04_Surrogate_from_ODE.jl",
+                   "05_Surrogate_from_FMU.jl"])
 
 isdir(STATIC_PATH) || mkpath(STATIC_PATH)
 

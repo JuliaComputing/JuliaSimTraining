@@ -9,14 +9,10 @@ JuliaSim is a next generation cloud-based simulation platform, combining the lat
 
 ## Agenda
 
-- [15 min]: Build your first JuliaSim model
-    - `02_JuliaSim/00_RC_Circuit_Model.jl`
-- [15 min]: Calibration with JuliaSim ModelOptimizer
-    - TODO: new script from [`de_sauty_bridge.jl` test](https://github.com/JuliaComputing/JuliaSimModelOptimizer.jl/blob/master/test/de_sauty_bridge.jl)
-- [15 min]: Acceleration with JuliaSim Surrogates
-    - TODO: new script from circuit model (RC or RLC)
-- [15 min]: Leverage cloud-compute for end-to-end process on JuliaHub
-    - `01_JuliaHub/03_Batch_Job_Logging.jl`
+- [15 min]: Model building
+- [15 min]: Parameter estimation
+- [15 min]: Model acceleration
+- [15 min]: Platform review
 
 ## Reference
 
