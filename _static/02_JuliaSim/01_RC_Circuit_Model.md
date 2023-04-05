@@ -62,7 +62,7 @@ C  ─┬─           │   │ R
     └──────────────┘
 ```
 
-> **Tip**
+> **Note**
 > Use the documentation to get information on each components description, states,
 > parameters and connectors.
 
@@ -80,7 +80,7 @@ Composing the entire system requires the connection and the component systems th
                             systems = [resistor, capacitor, constant, source, ground])
 ````
 
-> **Tip**
+> **Note**
 > An equivalent method to create the system is to use `compose`.
 > ```julia
 > @named _rc_model = ODESystem(rc_eqs, t)

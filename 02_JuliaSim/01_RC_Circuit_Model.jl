@@ -56,7 +56,7 @@ C  ─┬─           │   │ R
 ```
 =#
 
-# > **Tip**
+# > **Note**
 # > Use the documentation to get information on each components description, states,
 # > parameters and connectors.
 
@@ -70,7 +70,7 @@ rc_eqs = [connect(constant.output, source.V)
 @named rc_model = ODESystem(rc_eqs, t,
                             systems = [resistor, capacitor, constant, source, ground])
 
-# > **Tip**
+# > **Note**
 # > An equivalent method to create the system is to use `compose`.
 # > ```julia
 # > @named _rc_model = ODESystem(rc_eqs, t)
