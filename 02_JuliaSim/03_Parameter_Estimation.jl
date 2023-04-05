@@ -18,10 +18,8 @@ using IfElse: ifelse
 using Statistics
 using StatsPlots
 
-# ## Model Setup
-# Create a custom component (non-linear resistor) using pre-defined components from
-# the `Electrical` module of `ModelingToolkitStandardLibrary`. This strategy show how component
-# libraries may be built up, extended and used to create more complicated models.
+# ## Building the Model
+# First, define the nonlinear resistor.
 
 @parameters t
 
@@ -39,8 +37,7 @@ function NonlinearResistor(; name, Ga, Gb, Ve)
     extend(ODESystem(eqs, t, [], pars; name = name), oneport)
 end
 
-# Between the pre-defined components available from `ModelingToolkitStandardLibrary.Electrical`
-# and our custom component, we have all the required pieces to define our model.
+# Next, create each component needed to define the system.
 
 @named L = Inductor(L = 18)
 @named Ro = Resistor(R = 12.5e-3)
@@ -52,7 +49,7 @@ end
                               Ve = 1)
 @named Gnd = Ground()
 
-# Connections will determine the flow of electricity throughout the system.
+# Finally, form the connections to determine the flow of electricity throughout the system.
 
 connections = [connect(L.p, G.p)
                connect(G.n, Nr.p)
@@ -67,10 +64,6 @@ connections = [connect(L.p, G.p)
 # These connections along with their internal systems come together to form the model.
 
 @named model = ODESystem(connections, t, systems = [L, Ro, G, C1, C2, Nr, Gnd])
-
-# It is easy to generate the most performant system by calling `structural_simplify`.
-# This allows us to define the model intuitively and still get out the most performan system.
-
 sys = structural_simplify(model)
 
 # As before, we can setup the problem and solve.
@@ -96,21 +89,24 @@ invprob = InverseProblem([trial], sys,
 # respective data simultaniously. In this example, we have 3 parameters which are simultaneously optimized:
 # the resistance of the resistor `Ro` and the capacitances of the capacitors `C1`, `C2`.
 
-vp = vpop(invprob, StochGlobalOpt(maxiters=10), population_size = 50)
+vp = vpop(invprob, StochGlobalOpt(maxiters = 10), population_size = 50)
 params = DataFrame(vp)
 
 # Once the parameters have been optimized, we can use the statistical plotting
 # libraries of Julia to generate density plots of the parameters.
 # We can then compare the mean value of these density plots with the original parameter values.
 
-p1 = density(params[:,1], label = "Estimate: Ro")
-plot!([12.5e-3,12.5e-3],[0.0, 300],lw=3,color=:green,label="True value: Ro",linestyle = :dash);
+p1 = density(params[:, 1], label = "Estimate: Ro")
+plot!([12.5e-3, 12.5e-3], [0.0, 300], lw = 3, color = :green, label = "True value: Ro",
+      linestyle = :dash);
 
-p2 = density(params[:,2], label = "Estimate: C1")
-plot!([10,10],[0.0, 1],lw=3,color=:red,label="True value: C1",linestyle = :dash);
+p2 = density(params[:, 2], label = "Estimate: C1")
+plot!([10, 10], [0.0, 1], lw = 3, color = :red, label = "True value: C1", linestyle = :dash);
 
-p3 = density(params[:,3], label = "Estimate: C2")
-plot!([100,100],[0.0, 0.15],lw=3,color=:purple,label="True value: C2",linestyle = :dash);
+p3 = density(params[:, 3], label = "Estimate: C2")
+plot!([100, 100], [0.0, 0.15], lw = 3, color = :purple, label = "True value: C2",
+      linestyle = :dash);
 
 l = @layout [a b c]
 plot(p1, p2, p3, layout = l)
+
