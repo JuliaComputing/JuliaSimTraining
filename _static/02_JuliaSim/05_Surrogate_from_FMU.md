@@ -105,6 +105,25 @@ Provide initial conditions, parameter values and timespan (`x0`, `p` and `t` res
 surrogate([0.0, 1.0, 0.0, 0.0], [0.2002, 0.4004], (0, 1e4))
 ````
 
+## Workflow
+A useful working paradigm is to train the surrogate once and use it for inference many times after.
+How do we fast-forward through the training step?
+
+````julia
+using JuliaHubClient
+using Serialization
+````
+
+Serialize the surrogate object and save the result as a DataSet on JuliaHub
+
+````julia
+Serialization.serialize(joinpath(@__DIR__, "coupled_clutches_surrogate.jls"), (; surrogate))
+JuliaHubClient.upload_new_dataset("Coupled_Clutches_Surrogate",
+                                  joinpath(@__DIR__, "coupled_clutches_surrogate.jls");
+                                  tags = ["training", "workshop"],
+                                  description = "Surrogate model from `CoupledClutches.fmu`")
+````
+
 ---
 
 *This page was generated using [Literate.jl](https://github.com/fredrikekre/Literate.jl).*
