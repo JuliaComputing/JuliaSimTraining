@@ -31,17 +31,20 @@ using ModelingToolkit, OrdinaryDiffEq, Plots
 using ModelingToolkitStandardLibrary.Electrical
 using ModelingToolkitStandardLibrary.Blocks: Constant
 
-# Constants
+# Set starting values for resistance, current and voltage.
 
 R = 1.0
 C = 1.0
 V = 1.0
 
-# Independent time variable
+# The independent variable to the system will be time.
 
 @variables t
 
-# Components
+# Create each component from the standard library.
+# These are `@named` models, which practically means that all model parameters and states
+# belong to that model's namespace.
+# This approach can help to avoid ambiguity when passing a symbolic default to a component.
 
 @named resistor = Resistor(R = R)
 @named capacitor = Capacitor(C = C)
@@ -49,32 +52,50 @@ V = 1.0
 @named constant = Constant(k = V)
 @named ground = Ground()
 
-# Connections
+# All components (or models) exist. Now they must be properly connected.
+# Use the diagram to form the appropirate connections.
 
 rc_eqs = [connect(constant.output, source.V)
           connect(source.p, resistor.p)
           connect(resistor.n, capacitor.p)
           connect(capacitor.n, source.n, ground.g)]
 
-# System
+# Composing the entire system requires the connection and the component systems themselves.
 
 @named rc_model = ODESystem(rc_eqs, t,
                             systems = [resistor, capacitor, constant, source, ground])
-@show equations(rc_model)
 
-# Simplified system
+# !!! tip
+#     An equivalent method to create the system is to use `compose`.
+#     ```julia
+#     @named _rc_model = ODESystem(rc_eqs, t)
+#     @named rc_model = compose(_rc_model, [resistor, capacitor, constant, source, ground])
+#     ```
+
+# The resulting model is comprised of 18 equations.
+
+equations(expand_connections(rc_model))
+
+# However, we know the system has a more simple description.
+# Watch what happens when `structural_simplify` is used to algebraically simplify the system's equations.
 
 sys = structural_simplify(rc_model)
-@show equations(sys)
 
-# Problem
+# The system is reduced to a single equation - that of an ideal capacitor.
+
+equations(sys)
+
+# Define an ordinary differential-algebraic equation problem of the system.
 
 prob = ODAEProblem(sys, Pair[], (0, 10.0))
 
-# Solve
+# Solve the problem using the common solve interface.
 
 sol = solve(prob, Tsit5())
-plot(sol, vars = [capacitor.v, resistor.i],
+
+# Plot the results. Note that accessing the desired variables is done via its model namespace.
+
+plot(sol, idxs = [capacitor.v, resistor.i],
      title = "RC Circuit Demonstration",
      labels = ["Capacitor Voltage" "Resistor Current"])
 

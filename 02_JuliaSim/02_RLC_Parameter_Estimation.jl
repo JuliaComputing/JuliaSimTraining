@@ -1,4 +1,4 @@
-# [Uncertainty-Aware Parameter Estimation of an Acausal Circuit Model](https://help.juliahub.com/jsmo/dev/example/ChuaCircuit/#chua_circuit)
+# # [Uncertainty-Aware Parameter Estimation of an Acausal Circuit Model](https://help.juliahub.com/jsmo/dev/example/ChuaCircuit/#chua_circuit)
 # How can does one perform parameter estimation with ModelingToolkit models?
 # JuliaSim ModelOptimizer provides tools to complete this process in a robust manner
 # with uncertainty awareness.
@@ -114,4 +114,3 @@ plot!([100,100],[0.0, 0.15],lw=3,color=:purple,label="True value: C2",linestyle 
 
 l = @layout [a b c]
 plot(p1, p2, p3, layout = l)
-

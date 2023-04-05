@@ -1,4 +1,4 @@
-# # JuliaSimSurrogates from an ODE
+# # Surrogates from an ODE
 # JuliaSimSurrogates is a package to help standardize the process of creating surrogate models across engineering domains.
 # The steps below are common for creating surrogates from various starting points:
 #
