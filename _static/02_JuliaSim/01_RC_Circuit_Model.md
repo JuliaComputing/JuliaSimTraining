@@ -62,9 +62,9 @@ C  ─┬─           │   │ R
     └──────────────┘
 ```
 
-**Tip**
-Use the documentation to get information on each components description, states,
-parameters and connectors.
+> **Tip**
+> Use the documentation to get information on each components description, states,
+> parameters and connectors.
 
 ````julia
 rc_eqs = [connect(constant.output, source.V)
@@ -80,12 +80,12 @@ Composing the entire system requires the connection and the component systems th
                             systems = [resistor, capacitor, constant, source, ground])
 ````
 
-**Tip**
-An equivalent method to create the system is to use `compose`.
-```julia
-@named _rc_model = ODESystem(rc_eqs, t)
-@named rc_model = compose(_rc_model, [resistor, capacitor, constant, source, ground])
-```
+> **Tip**
+> An equivalent method to create the system is to use `compose`.
+> ```julia
+> @named _rc_model = ODESystem(rc_eqs, t)
+> @named rc_model = compose(_rc_model, [resistor, capacitor, constant, source, ground])
+> ```
 
 The resulting model is comprised of many equations.
 
