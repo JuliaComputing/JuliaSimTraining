@@ -12,20 +12,9 @@
 # > source and these will produce different responses. A first order RC circuit is composed
 # > of one resistor and one capacitor and is the simplest type of RC circuit[^rc].
 
-# The `ModelingToolkitStandardLibrary` contains all the components we need to build the
-# simplest RC circuit described above. The model  is outlined by the diagram below.
-
-#=
-```
-      I
-     ──────►
-    ┌──────────────┐
-  ──┴──          ┌─┴─┐
-C  ─┬─           │   │ R
-    │            └─┬─┘
-    └──────────────┘
-```
-=#
+# ## Modeling Toolkit Standard Library
+# The `Electrical` module of `ModelingToolkitStandardLibrary` contains all the
+# components we need to build the simplest RC circuit described above.
 
 using ModelingToolkit, OrdinaryDiffEq, Plots
 using ModelingToolkitStandardLibrary.Electrical
@@ -52,8 +41,24 @@ V = 1.0
 @named constant = Constant(k = V)
 @named ground = Ground()
 
-# All components (or models) exist. Now they must be properly connected.
-# Use the diagram to form the appropirate connections.
+#=
+All components (or models) exist. Now they must be properly connected.
+Use the diagram to form the appropirate connections.
+
+```
+      I
+     ──────►
+    ┌──────────────┐
+  ──┴──          ┌─┴─┐
+C  ─┬─           │   │ R
+    │            └─┬─┘
+    └──────────────┘
+```
+=#
+
+# **Tip**
+# Use the documentation to get information on each components description, states,
+# parameters and connectors.
 
 rc_eqs = [connect(constant.output, source.V)
           connect(source.p, resistor.p)
@@ -65,14 +70,14 @@ rc_eqs = [connect(constant.output, source.V)
 @named rc_model = ODESystem(rc_eqs, t,
                             systems = [resistor, capacitor, constant, source, ground])
 
-# !!! tip
-#     An equivalent method to create the system is to use `compose`.
-#     ```julia
-#     @named _rc_model = ODESystem(rc_eqs, t)
-#     @named rc_model = compose(_rc_model, [resistor, capacitor, constant, source, ground])
-#     ```
+# **Tip**
+# An equivalent method to create the system is to use `compose`.
+# ```julia
+# @named _rc_model = ODESystem(rc_eqs, t)
+# @named rc_model = compose(_rc_model, [resistor, capacitor, constant, source, ground])
+# ```
 
-# The resulting model is comprised of 18 equations.
+# The resulting model is comprised of many equations.
 
 equations(expand_connections(rc_model))
 
@@ -85,7 +90,7 @@ sys = structural_simplify(rc_model)
 
 equations(sys)
 
-# Define an ordinary differential-algebraic equation problem of the system.
+# Define a differential-algebraic equation problem of the system.
 
 prob = ODAEProblem(sys, Pair[], (0, 10.0))
 
